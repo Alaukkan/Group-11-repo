@@ -49,27 +49,6 @@ def check_food():
                     return "wrong"
     print("Timed out")
     return "timed out"
-    
-def check_food_2():
-    """
-    Checks if the food is correct.
-    If it is, returns "correct", else "wrong".
-    Has a 20 second timer, if it runs out, returns "timed out"
-    """
-    start_time = time.time()
-    while time.time() - start_time < 20:  # 20 seconds timer
-        time.sleep(0.01)
-        if buttons[0].value() == 0 and status["requesting"] == led[0]:
-            print(f"Red was pressed in {time.time() - start_time} seconds")
-            return "correct"
-        elif buttons[1].value() == 0 and status["requesting"] == led[1]:
-            print(f"Green was pressed in {time.time() - start_time} seconds")
-            return "correct"
-        elif buttons[2].value() == 0 and status["requesting"] == led[2]:
-            print(f"Blue was pressed in {time.time() - start_time} seconds")
-            return "correct"
-    print("Timed out")
-    return "timed out"
 
 def correct_food():
     """
