@@ -1,17 +1,3 @@
-"""
-Requesting food:
-    - LED
-    - Sound?
-
-Correct food:
-    - Both hands rise up
-
-Wrong food or 20 seconds:
-    - Turns left and right
-    - Hands turn eri tahtiin
-
-"""
-
 import random
 import time
 from machine import Pin
