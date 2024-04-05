@@ -1,5 +1,5 @@
 import random
-import time
+import utime
 from machine import Pin
 
 button_red = Pin(18, Pin.IN, Pin.PULL_UP)
@@ -27,7 +27,6 @@ def request_food():
     item = random.randint(0, len(led) - 1)
     status["requesting"] = led[item]
     print(f"requesting food: {color[item]}")
-    time.sleep(0.5)
     status["requesting"].high()
     return
 
@@ -37,19 +36,19 @@ def check_food():
     If it is, returns "correct", else "wrong".
     Has a 20 second timer, if it runs out, returns "timed out"
     """
-    start_time = time.time()
-    while time.time() - start_time < 20:  # 20 seconds timer
-        time.sleep(0.01)
+    start_time = utime.time()
+    while utime.time() - start_time < 20:  # 20 seconds timer
+        utime.sleep(0.01)
         for i in range(0,3):
             if buttons[i].value() == 0:
-                print(f"{color[i]} was pressed in {time.time() - start_time} seconds")
+                print(f"{color[i]} was pressed in {utime.time() - start_time} seconds")
                 if led[i] == status["requesting"]:
                     return "correct"
                 else:
                     return "wrong"
     print("Timed out")
     return "timed out"
-
+    
 def correct_food():
     """
     If the food is correct, all leds flash for 2 seconds
@@ -59,7 +58,7 @@ def correct_food():
         LED_RED.toggle()
         LED_GREEN.toggle()
         LED_BLUE.toggle()
-        time.sleep(0.2)
+        utime.sleep(0.2)
     status["requesting"] = "none"
     LED_RED.low()
     LED_GREEN.low()
@@ -69,11 +68,11 @@ def correct_food():
 def wrong_food():
     """
     If the Robo Pet is given the wrong food, 
-    the requested led will flash for 2 seconds and will stay on
+    the requested led will flash and stay on
     """
     for i in range(6):
         status["requesting"].toggle()
-        time.sleep(0.2)
+        utime.sleep(0.11)
     status["requesting"].high()
     return
 
@@ -85,7 +84,7 @@ def timer(min, max):
     """
     delay = random.randint(min, max)
     print(f"timer: {delay}")
-    time.sleep(delay)
+    utime.sleep(delay)
     return
 
 def main():
