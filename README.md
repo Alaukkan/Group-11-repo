@@ -3,10 +3,10 @@
 This is the repository for group-11's project in Principles of Digital Fabrication Course.
 
 Members:
-Alex, programmer
-Anssi, prototyper
-Jouni, manager
-Petrus, designer
+* Alex, programmer
+* Anssi, prototyper
+* Jouni, manager
+* Petrus, designer
 
 ## Project Description
 
