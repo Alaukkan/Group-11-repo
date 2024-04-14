@@ -2,9 +2,18 @@
 
 This is the repository for group-11's project in Principles of Digital Fabrication Course.
 
+Members:
+Alex, programmer
+Anssi, prototyper
+Jouni, manager
+Petrus, designer
+
 ## Project Description
 
-*Brief description of the project*
+Aim of this project is to design and produce a desktop mounted robot pet resembling a penguin.
+This robot pet, or RoboPet(™, Ⓒ, Patent Pending) if you will, will be stationary, but able to pivot in place and move its arms (wings?).
+It is capable of simulating simple functions of a pet such as demanding particular food items and communicating using sound and LEDs.
+Mechanical and structural parts needed for the project will be designed and 3D-printed by us.
 
 ## Contents of the Repository
 
@@ -13,7 +22,7 @@ In this repository you will find everything needed to copy and manufacture our p
 * Source code in main.py file.
 * Possible additional modules (module_name.py).
 * .stl files containing design of the 3D-printed parts.
-* .png or .fzz files containing schematics for electrical connections.
+* .png or .fzz files containing schematics for electrical connections and concept art.
 * Documentation.md containing project description, parts list,
   software and tools used/needed, some code snippets highlighting key functionalities.
 * Resources.md containing possibly relevant information or links.
