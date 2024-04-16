@@ -86,7 +86,7 @@ def request_food():
 
 def check_food():
     """
-    Checks if the food is correct.
+    Checks if the correct button is pressed.
     If it is, returns "correct", else "wrong".
     Has a 20 second timer, if it runs out, returns "timed out"
     """
@@ -140,6 +140,7 @@ def correct_food():
     servo_hatch.move(20)
     servo_right_wing.move(25)
     servo_left_wing.move(25)
+    deinit_servos()
     for i in range(3):
         led_off()
         utime.sleep(0.4)
@@ -149,6 +150,7 @@ def correct_food():
     servo_hatch.move(0)
     servo_right_wing.move(0)
     servo_left_wing.move(0)
+    deinit_servos()
     status["requesting_color"] = "none"
     status["requesting_RFID"] = "none"
     return
@@ -162,6 +164,7 @@ def wrong_food():
     hatch opens "spitting" the food out and closes
     """
     servo_hatch.move(-20)
+    deinit_servos()
     for i in range(3):
         led_off()
         servo_right_wing.move(25)
@@ -178,6 +181,7 @@ def wrong_food():
     servo_left_wing.move(0)
     servo_hatch.move(0)
     servo_rotator.move(0)
+    deinit_servos()
     return
 
 def timed_out():
@@ -186,13 +190,25 @@ def timed_out():
     hatch opens and closes (spits food out)
     """
     servo_hatch.move(-20)
+    deinit_servos()
     output_color(rgb_colors["white"])
     utime.sleep(2)
     led_off()
     utime.sleep(1)
     servo_hatch.move(0)
+    deinit_servos()
     status["requesting_color"] = "none"
     return
+
+def deinit_servos():
+    """ 
+    Deinitialises servos to prevent jittering when idle
+    """
+    utime.sleep_ms(200)
+    servo_hatch.__motor.deinit()
+    servo_left_wing.__motor.deinit()
+    servo_right_wing.__motor.deinit()
+    servo_rotator.__motor.deinit()
 
 def timer(min, max):
     """
@@ -210,11 +226,12 @@ def main():
     The main function of the pet. Based on the timer the pet will get hungry
     and demand food. 
     """
+    deinit_servos()
     while True:
         timer(2, 5)
         request_food()
         while True:
-            result = check_food()
+            result = read_tag() #swap read_tag() to check_food() for button version
             if result == "wrong":
                 wrong_food()
             elif result == "correct":
