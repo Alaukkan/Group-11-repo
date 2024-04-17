@@ -43,7 +43,7 @@ rgb_colors = {
     "red" : (255, 0, 0),
     "green" : (0, 255, 0),
     "blue" : (0, 0, 255),
-    "yellow" : (255, 255, 0),
+    "yellow" : (255, 235, 40),
     "purple" : (200, 0, 255),
     "white" : (255, 255, 255)
 }
@@ -63,14 +63,22 @@ def output_color(icolor):
     rgb[0].duty_u16(round(65535 * red / 255))
     rgb[1].duty_u16(round(65535 * green / 255))
     rgb[2].duty_u16(round(65535 * blue / 255))
-    return
 
 def led_off():
     """Turns off the RGB led"""
     rgb[0].duty_u16(0)
     rgb[1].duty_u16(0)
     rgb[2].duty_u16(0)
-    return
+
+def deinit_servos():
+    """ 
+    Deinitialises servos to prevent jittering when idle
+    """
+    utime.sleep_ms(200)
+    servo_hatch.__motor.deinit()
+    servo_left_wing.__motor.deinit()
+    servo_right_wing.__motor.deinit()
+    servo_rotator.__motor.deinit()
 
 def request_food():
     """
@@ -82,7 +90,6 @@ def request_food():
     status["requesting_color"] = color[item]
     print(f"requesting food: {color[item]}")
     output_color(rgb_colors[color[item]])
-    return
 
 def check_food():
     """
@@ -120,14 +127,14 @@ def read_tag():
             (stat, uid) = reader.SelectTagSN()
             if stat == reader.OK:
                 tag_id = hex(int.from_bytes(bytes(uid),"little",False)).upper()
-                print(f"Tag detected {tag_id} = {tag_to_color[tag_id]}")
+                print(f"{tag_to_color[tag_id]} tag detected")
 
                 if tag_to_color[tag_id] == status["requesting_color"]:
                     return "correct"
                 return "wrong"
             else:
                 pass
-        utime.sleep_ms(500)
+        utime.sleep(0.5)
     
     return "Timed out"
 
@@ -152,8 +159,6 @@ def correct_food():
     servo_left_wing.move(0)
     deinit_servos()
     status["requesting_color"] = "none"
-    status["requesting_RFID"] = "none"
-    return
 
 def wrong_food():
     """
@@ -182,7 +187,6 @@ def wrong_food():
     servo_hatch.move(0)
     servo_rotator.move(0)
     deinit_servos()
-    return
 
 def timed_out():
     """
@@ -198,17 +202,6 @@ def timed_out():
     servo_hatch.move(0)
     deinit_servos()
     status["requesting_color"] = "none"
-    return
-
-def deinit_servos():
-    """ 
-    Deinitialises servos to prevent jittering when idle
-    """
-    utime.sleep_ms(200)
-    servo_hatch.__motor.deinit()
-    servo_left_wing.__motor.deinit()
-    servo_right_wing.__motor.deinit()
-    servo_rotator.__motor.deinit()
 
 def timer(min, max):
     """
@@ -219,7 +212,6 @@ def timer(min, max):
     delay = random.randint(min, max)
     print(f"timer: {delay}")
     utime.sleep(delay)
-    return
 
 def main():
     """
@@ -231,7 +223,7 @@ def main():
         timer(2, 5)
         request_food()
         while True:
-            result = read_tag() #swap read_tag() to check_food() for button version
+            result = read_tag()
             if result == "wrong":
                 wrong_food()
             elif result == "correct":
@@ -240,6 +232,5 @@ def main():
             else:
                 timed_out()
                 break
-    return
 
 main()
