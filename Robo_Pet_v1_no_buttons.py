@@ -4,12 +4,6 @@ from machine import Pin, PWM
 from mfrc522 import MFRC522
 from servo import Servo
 
-button_red = Pin(18, Pin.IN, Pin.PULL_UP)
-button_green = Pin(17, Pin.IN, Pin.PULL_UP)
-button_blue = Pin(16, Pin.IN, Pin.PULL_UP)
-button_yellow = Pin(15, Pin.IN, Pin.PULL_UP)
-button_purple = Pin(14, Pin.IN, Pin.PULL_UP)
-
 servo_hatch = Servo(19)
 servo_right_wing = Servo(20)
 servo_left_wing = Servo(21)
@@ -90,25 +84,6 @@ def request_food():
     status["requesting_color"] = color[item]
     print(f"requesting food: {color[item]}")
     output_color(rgb_colors[color[item]])
-
-def check_food():
-    """
-    Checks if the correct button is pressed.
-    If it is, returns "correct", else "wrong".
-    Has a 20 second timer, if it runs out, returns "timed out"
-    """
-    start_time = utime.time()
-    while utime.time() - start_time < 20:  # 20 seconds timer
-        utime.sleep(0.01)
-        for i in range(0,len(buttons)):
-            if buttons[i].value() == 0:
-                print(f"{color[i]} was pressed in {utime.time() - start_time} seconds")
-                if color[i] == status["requesting_color"]:
-                    return "correct"
-                else:
-                    return "wrong"
-    print("Timed out")
-    return "timed out"
 
 def read_tag():
     """
