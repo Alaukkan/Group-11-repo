@@ -68,7 +68,7 @@ def deinit_servos():
     """ 
     Deinitialises servos to prevent jittering when idle
     """
-    utime.sleep_ms(200)
+    utime.sleep_ms(300)
     servo_hatch.__motor.deinit()
     servo_left_wing.__motor.deinit()
     servo_right_wing.__motor.deinit()
