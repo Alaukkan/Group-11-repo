@@ -119,9 +119,9 @@ def correct_food():
     both wings lift up
     hatch opens and closes
     """
-    servo_hatch.move(20)
-    servo_right_wing.move(25)
-    servo_left_wing.move(25)
+    servo_hatch.move(45)
+    servo_right_wing.move(45)
+    servo_left_wing.move(45)
     deinit_servos()
     for i in range(3):
         led_off()
@@ -143,17 +143,17 @@ def wrong_food():
     wings move simultaniously opposite directions
     hatch opens "spitting" the food out and closes
     """
-    servo_hatch.move(-20)
+    servo_hatch.move(-45)
     deinit_servos()
     for i in range(3):
         led_off()
-        servo_right_wing.move(25)
-        servo_left_wing.move(-25)
+        servo_right_wing.move(45)
+        servo_left_wing.move(-45)
         servo_rotator.move(45)
         utime.sleep(0.4)
         output_color(rgb_colors[status["requesting_color"]])
-        servo_right_wing.move(-25)
-        servo_left_wing.move(25)
+        servo_right_wing.move(-45)
+        servo_left_wing.move(45)
         servo_rotator.move(-45)
         
         utime.sleep(0.4)
@@ -168,7 +168,7 @@ def timed_out():
     If the Robo Pet times out, the led does a long white flash
     hatch opens and closes (spits food out)
     """
-    servo_hatch.move(-20)
+    servo_hatch.move(-45)
     deinit_servos()
     output_color(rgb_colors["white"])
     utime.sleep(2)
