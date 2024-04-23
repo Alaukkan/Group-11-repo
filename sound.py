@@ -54,7 +54,7 @@ melodies = {
           "requesting" : noot_noot
 }
 
-def play_melody(melody_string, extra):
+def play_melody(melody_string, extra): # @param extra to enable multithreading
           
     melody = melodies[melody_string]
 
@@ -63,7 +63,7 @@ def play_melody(melody_string, extra):
         # The loop variable "notes" points to the frequency,
         # and "notes + 1" points to the duration of the note.
         piezo_PWM.freq(melody[notes])
-        piezo_PWM.duty_u16(60000)   # 40%ish powerlevel
+        piezo_PWM.duty_u16(60000)   
         sleep_ms(melody[notes + 1])
 
         # Pause for 20ms
@@ -89,5 +89,3 @@ def annoy_me():
         x += 1
     
     piezo_PWM.deinit()
-
-play_melody(victory)
