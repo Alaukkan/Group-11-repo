@@ -54,7 +54,7 @@ melodies = {
           "requesting" : noot_noot
 }
 
-def play_melody(melody_string):
+def play_melody(melody_string, extra):
           
     melody = melodies[melody_string]
 
