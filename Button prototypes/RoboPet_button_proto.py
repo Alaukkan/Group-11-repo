@@ -1,3 +1,5 @@
+# Wokwi simulation: https://wokwi.com/projects/394058199922910209 
+
 import random
 import utime
 from machine import Pin
