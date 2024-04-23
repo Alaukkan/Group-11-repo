@@ -1,5 +1,6 @@
 import random
 import utime
+import sound
 from machine import Pin, PWM
 from mfrc522 import MFRC522
 from servo import Servo
