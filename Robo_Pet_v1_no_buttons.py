@@ -67,7 +67,7 @@ def deinit_servos():
     """ 
     Deinitialises servos to prevent jittering when idle
     """
-    utime.sleep_ms(600)
+    utime.sleep_ms(500)
     servo_hatch.__motor.deinit()
     servo_left_wing.__motor.deinit()
     servo_right_wing.__motor.deinit()
@@ -108,7 +108,7 @@ def read_tag():
                 return "wrong"
             else:
                 pass
-        utime.sleep(0.5)
+        utime.sleep_ms(50)
     
     return "Timed out"
 
@@ -124,9 +124,9 @@ def correct_food():
     deinit_servos()
     for i in range(3):
         led_off()
-        utime.sleep(0.4)
+        utime.sleep_ms(300)
         output_color(rgb_colors["white"])
-        utime.sleep(0.4)
+        utime.sleep_ms(300)
     led_off()
     servo_hatch.move(0)
     servo_right_wing.move(0)
@@ -149,13 +149,13 @@ def wrong_food():
         servo_right_wing.move(45)
         servo_left_wing.move(-45)
         servo_rotator.move(45)
-        utime.sleep(0.4)
+        utime.sleep_ms(200)
         output_color(rgb_colors[status["requesting_color"]])
         servo_right_wing.move(-45)
         servo_left_wing.move(45)
         servo_rotator.move(-45)
         
-        utime.sleep(0.4)
+        utime.sleep_ms(200)
     servo_right_wing.move(0)
     servo_left_wing.move(0)
     servo_hatch.move(0)
