@@ -29,7 +29,6 @@ tag_to_color = {
 
 # order for lists: red(0), green(1), blue(2), yellow(3), purple(4)
 color = ["red", "green", "blue", "yellow", "purple"]
-rfid_tag = []
 rgb = [red_pin, green_pin, blue_pin]
 
 rgb_colors = {
@@ -149,13 +148,13 @@ def wrong_food():
         servo_right_wing.move(45)
         servo_left_wing.move(-45)
         servo_rotator.move(45)
-        utime.sleep_ms(600)
+        utime.sleep_ms(500)
         output_color(rgb_colors[status["requesting_color"]])
         servo_right_wing.move(-45)
         servo_left_wing.move(45)
         servo_rotator.move(-45)
         
-        utime.sleep_ms(600)
+        utime.sleep_ms(500)
     servo_right_wing.move(0)
     servo_left_wing.move(0)
     servo_hatch.move(0)
