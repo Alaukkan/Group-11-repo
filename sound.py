@@ -63,7 +63,7 @@ def play_melody(melody_string, extra):
         # The loop variable "notes" points to the frequency,
         # and "notes + 1" points to the duration of the note.
         piezo_PWM.freq(melody[notes])
-        piezo_PWM.duty_u16(25000)   # 40%ish powerlevel
+        piezo_PWM.duty_u16(60000)   # 40%ish powerlevel
         sleep_ms(melody[notes + 1])
 
         # Pause for 20ms
