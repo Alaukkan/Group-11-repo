@@ -1,9 +1,7 @@
 # Basic servo library found here:
 # https://forums.raspberrypi.com/viewtopic.php?t=303900
 
-import math
 from machine import Pin, PWM
-import utime
 
 class Servo:
     # these defaults work for the standard TowerPro SG90
