@@ -84,7 +84,7 @@ def request_food():
     status["requesting_color"] = color[item]
     print(f"requesting food: {color[item]}")
     output_color(rgb_colors[color[item]])
-    sound.requesting_sound()
+    _thread.start_new_thread(sound.play_melody, ("requesting"))
 
 def read_tag():
     """
@@ -120,8 +120,8 @@ def correct_food():
     both wings lift up
     hatch opens and closes
     """
+    _thread.start_new_thread(sound.play_melody, ("happy"))
     servo_hatch.move(30)
-    sound.happy_sound()
     servo_right_wing.move(70)
     servo_left_wing.move(70)
     deinit_servos()
@@ -145,8 +145,8 @@ def wrong_food():
     wings move simultaniously opposite directions
     hatch opens "spitting" the food out and closes
     """
+    _thread.start_new_thread(sound.play_melody, ("angry"))
     servo_hatch.move(-30)
-    sound.angry_sound()
     deinit_servos()
     for i in range(3):
         led_off()
@@ -171,7 +171,7 @@ def timed_out():
     If the Robo Pet times out, the led does a long white flash
     hatch opens and closes (spits food out)
     """
-    sound.timed_out_sound()
+    _thread.start_new_thread(sound.play_melody, ("timed out"))
     servo_hatch.move(-30)
     deinit_servos()
     output_color(rgb_colors["white"])
