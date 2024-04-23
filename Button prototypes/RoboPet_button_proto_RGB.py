@@ -1,3 +1,6 @@
+# Wokwi simulation: https://wokwi.com/projects/394336299402383361 
+# Prototype simulating robopet with RGB light and 5 buttons (for the 5 rfid tags)
+
 import random
 import utime
 from machine import Pin, PWM
