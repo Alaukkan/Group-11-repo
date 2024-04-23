@@ -47,7 +47,16 @@ time_out = [b, 75, pause, 50, b, 75, pause, 500, b, 75, pause, 50, b, 75]
 
 victory = [c, 133, c, 133, c, 133, c, 400, 415, 400, 466, 400, c, 133, 466, 133, c, 1200]
 
-def play_melody(melody):
+melodies = {
+          "happy" : victory,
+          "angry" : perkele,
+          "timed out" : time_out,
+          "requesting" : noot_noot
+}
+
+def play_melody(melody_string):
+          
+    melody = melodies[melody_string]
 
     for notes in range(0, len(melody), 2):
         
