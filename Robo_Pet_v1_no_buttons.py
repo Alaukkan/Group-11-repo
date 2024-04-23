@@ -29,7 +29,6 @@ tag_to_color = {
 
 # order for lists: red(0), green(1), blue(2), yellow(3), purple(4)
 color = ["red", "green", "blue", "yellow", "purple"]
-buttons = [button_red, button_green, button_blue, button_yellow, button_purple]
 rfid_tag = []
 rgb = [red_pin, green_pin, blue_pin]
 
@@ -68,7 +67,7 @@ def deinit_servos():
     """ 
     Deinitialises servos to prevent jittering when idle
     """
-    utime.sleep_ms(300)
+    utime.sleep_ms(600)
     servo_hatch.__motor.deinit()
     servo_left_wing.__motor.deinit()
     servo_right_wing.__motor.deinit()
