@@ -20,14 +20,14 @@ Mechanical and structural parts needed for the project will be designed and 3D-p
 In this repository you will find everything needed to copy and manufacture our project, including:
 
 * Source code in main.py file.
-* Possible additional modules (module_name.py).
+* Additional modules, such as sound.py, servo.py, mfrc522.py, etc.
 * .stl files containing design of the 3D-printed parts.
-* .png or .fzz files containing schematics for electrical connections and concept art.
-* Documentation.md containing project description, parts list,
+* .png and .fzz files containing schematics for electrical connections.
+* .jpg and .png files containing concept art.
+* Project RoboPet Documentation.md containing project description, parts list,
   software and tools used/needed, some code snippets highlighting key functionalities.
-* Resources.md containing possibly relevant information or links.
 * README.md (this file you are reading) containing short project description,
-  info about the contents of the repository and fascinating, and most likely incorrect or subject to change, legal information about licenses.
+  info about the contents of the repository and fascinating, and most likely incorrect and/or subject to change, legal information about licenses.
 
 ## Licenses
 
