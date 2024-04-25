@@ -1,16 +1,15 @@
 import random
+import sound
 import utime
-from machine import I2C, Pin, PWM
+import _thread
+from machine import Pin, PWM
 from mfrc522 import MFRC522
-from servo import Servos
+from servo import Servo
 
-i2c = I2C(2)
-ser = Servos(i2c)
-
-servo_hatch = 0
-servo_right_wing = 1
-servo_left_wing = 2
-servo_rotator = 3
+servo_hatch = Servo(19)
+servo_right_wing = Servo(20)
+servo_left_wing = Servo(21)
+servo_rotator = Servo(22)
 
 red_pin = PWM(Pin(11, Pin.OUT))
 green_pin = PWM(Pin(12, Pin.OUT))
@@ -44,7 +43,9 @@ rgb_colors = {
 }
 
 status = {
-    "requesting_color" : "none"
+    "requesting_color" : "none",
+    "failed" : 0,
+    "timed out" : 0
 }
 
 def output_color(icolor):
@@ -69,7 +70,7 @@ def deinit_servos():
     """ 
     Deinitialises servos to prevent jittering when idle
     """
-    utime.sleep_ms(200)
+    utime.sleep_ms(500)
     servo_hatch.__motor.deinit()
     servo_left_wing.__motor.deinit()
     servo_right_wing.__motor.deinit()
@@ -85,6 +86,7 @@ def request_food():
     status["requesting_color"] = color[item]
     print(f"requesting food: {color[item]}")
     output_color(rgb_colors[color[item]])
+    _thread.start_new_thread(sound.play_melody, ("requesting"))
 
 def read_tag():
     """
@@ -110,7 +112,7 @@ def read_tag():
                 return "wrong"
             else:
                 pass
-        utime.sleep(0.5)
+        utime.sleep_ms(50)
     
     return "Timed out"
 
@@ -120,21 +122,23 @@ def correct_food():
     both wings lift up
     hatch opens and closes
     """
-    ser.position(servo_hatch, degrees=90+20)
-    ser.position(servo_right_wing, degrees=90+25)
-    ser.position(servo_left_wing, degrees=90+25)
-    #deinit_servos()
+    _thread.start_new_thread(sound.play_melody, ("happy"))
+    servo_hatch.move(30)
+    servo_right_wing.move(70)
+    servo_left_wing.move(70)
+    deinit_servos()
     for i in range(3):
         led_off()
-        utime.sleep(0.4)
+        utime.sleep_ms(300)
         output_color(rgb_colors["white"])
-        utime.sleep(0.4)
+        utime.sleep_ms(300)
     led_off()
-    ser.position(servo_hatch, degrees=90)
-    ser.position(servo_right_wing, degrees=90)
-    ser.position(servo_left_wing, degrees=90)
-    #deinit_servos()
+    servo_hatch.move(0)
+    servo_right_wing.move(0)
+    servo_left_wing.move(0)
+    deinit_servos()
     status["requesting_color"] = "none"
+    status["timed out"] = 0
 
 def wrong_food():
     """
@@ -144,39 +148,44 @@ def wrong_food():
     wings move simultaniously opposite directions
     hatch opens "spitting" the food out and closes
     """
-    ser.position(servo_hatch, degrees=-20+90)
-    #deinit_servos()
+    _thread.start_new_thread(sound.play_melody, ("angry"))
+    servo_hatch.move(-30)
+    deinit_servos()
     for i in range(3):
         led_off()
-        ser.position(servo_right_wing, degrees=25+90)
-        ser.position(servo_left_wing, degrees=-25+90)
-        ser.position(servo_rotator, degrees=45+90)
-        utime.sleep(0.4)
+        servo_right_wing.move(45)
+        servo_left_wing.move(-45)
+        servo_rotator.move(45)
+        utime.sleep_ms(500)
         output_color(rgb_colors[status["requesting_color"]])
-        ser.position(servo_right_wing, degrees=-25+90)
-        ser.position(servo_left_wing, degrees=25+90)
-        ser.position(servo_rotator, degrees=-45+90)
-        utime.sleep(0.4)
-    ser.position(servo_right_wing, degrees=90)
-    ser.position(servo_left_wing, degrees=90)
-    ser.position(servo_rotator, degrees=90)
-    ser.position(servo_hatch, degrees=90)
-    #deinit_servos()
+        servo_right_wing.move(-45)
+        servo_left_wing.move(45)
+        servo_rotator.move(-45)
+        
+        utime.sleep_ms(500)
+    servo_right_wing.move(0)
+    servo_left_wing.move(0)
+    servo_hatch.move(0)
+    servo_rotator.move(0)
+    deinit_servos()
+    status["failed"] += 1
 
 def timed_out():
     """
     If the Robo Pet times out, the led does a long white flash
     hatch opens and closes (spits food out)
     """
-    ser.position(servo_hatch, degrees=-20+90)
-    #deinit_servos()
+    _thread.start_new_thread(sound.play_melody, ("timed out"))
+    servo_hatch.move(-30)
+    deinit_servos()
     output_color(rgb_colors["white"])
     utime.sleep(2)
     led_off()
     utime.sleep(1)
-    ser.position(servo_hatch, degrees=90)
-    #deinit_servos()
+    servo_hatch.move(0)
+    deinit_servos()
     status["requesting_color"] = "none"
+    status["timed out"] += 1
 
 def timer(min, max):
     """
@@ -194,7 +203,7 @@ def main():
     and demand food. 
     """
     deinit_servos()
-    while True:
+    while status["failed"] < 3 and status["timed out"] < 2:
         timer(2, 5)
         request_food()
         while True:
