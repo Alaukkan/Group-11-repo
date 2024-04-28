@@ -43,6 +43,7 @@ rgb_colors = {
 }
 
 status = {
+    "available" : ["red", "green", "blue", "yellow", "purple"],
     "requesting_color" : "none",
     "failed" : 0,
     "timed out" : 0
@@ -82,10 +83,14 @@ def request_food():
     wants by accessing the element in the led list. Robopet
     indicates what food it wants by a colored LED. 
     """
-    item = random.randint(0, len(color) - 1)
-    status["requesting_color"] = color[item]
-    print(f"requesting food: {color[item]}")
-    output_color(rgb_colors[color[item]])
+    length = len(status["available"])
+    if length > 1:
+        item = random.randint(0, length - 1)
+    else:
+        item = 0
+    status["requesting_color"] = status["available"][item]
+    print(f"requesting food: {status["available"][item]}")
+    output_color(rgb_colors[status["available"][item]])
     _thread.start_new_thread(sound.play_melody, ("requesting"))
 
 def read_tag():
@@ -137,6 +142,7 @@ def correct_food():
     servo_right_wing.move(0)
     servo_left_wing.move(0)
     deinit_servos()
+    available.remove(status["requesting_color"])
     status["requesting_color"] = "none"
     status["timed out"] = 0
 
@@ -197,13 +203,22 @@ def timer(min, max):
     print(f"timer: {delay}")
     utime.sleep(delay)
 
+def check_state(status):
+    """
+    Checks the game state. Returns false if:
+    - all rfid tags have been read
+    - 3 wrong rfid tags have been read
+    - timed out 2 times in a row
+    """
+    return len(status["available"]) > 0 and status["failed"] < 3 and status["timed out"] < 2:
+
 def main():
     """
     The main function of the pet. Based on the timer the pet will get hungry
     and demand food. 
     """
     deinit_servos()
-    while status["failed"] < 3 and status["timed out"] < 2:
+    while check_state(status):
         timer(2, 5)
         request_food()
         while True:
