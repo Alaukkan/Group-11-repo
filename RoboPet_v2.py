@@ -44,14 +44,14 @@ status = {
     "timed out" : 0
 }
 
-def output_color(icolor):
+def output_color(color):
     """
     takes the rgb values from given parameter tuple and
     outputs the color to the RGB led
     """
-    red = icolor[0]
-    green = icolor[1]
-    blue = icolor[2]
+    red = color[0]
+    green = color[1]
+    blue = color[2]
     rgb[0].duty_u16(round(65535 * red / 255))
     rgb[1].duty_u16(round(65535 * green / 255))
     rgb[2].duty_u16(round(65535 * blue / 255))
@@ -78,6 +78,7 @@ def request_food():
     wants by accessing the element in the led list. Robopet
     indicates what food it wants by a colored LED. 
     """
+    random.seed(utime.time() - utime.time_ns())
     length = len(status["available"])
     if length > 1:
         item = random.randint(0, length - 1)
@@ -86,7 +87,7 @@ def request_food():
     status["requesting_color"] = status["available"][item]
     print(f"requesting food: {status["available"][item]}")
     output_color(rgb_colors[status["available"][item]])
-    _thread.start_new_thread(sound.play_melody, ("requesting"))
+    _thread.start_new_thread(sound.play_melody, ("requesting", 1))
 
 def read_tag():
     """
@@ -122,9 +123,9 @@ def correct_food():
     both wings lift up
     hatch opens and closes
     """
-    _thread.start_new_thread(sound.play_melody, ("happy"))
-    servo_hatch.move(30)
-    servo_right_wing.move(70)
+    _thread.start_new_thread(sound.play_melody, ("happy", 1))
+    servo_hatch.move(-30)
+    servo_right_wing.move(-70)
     servo_left_wing.move(70)
     deinit_servos()
     for i in range(3):
@@ -137,7 +138,7 @@ def correct_food():
     servo_right_wing.move(0)
     servo_left_wing.move(0)
     deinit_servos()
-    available.remove(status["requesting_color"])
+    status["available"].remove(status["requesting_color"])
     status["requesting_color"] = "none"
     status["timed out"] = 0
 
@@ -149,17 +150,17 @@ def wrong_food():
     wings move simultaniously opposite directions
     hatch opens "spitting" the food out and closes
     """
-    _thread.start_new_thread(sound.play_melody, ("angry"))
-    servo_hatch.move(-30)
+    _thread.start_new_thread(sound.play_melody, ("angry", 1))
+    servo_hatch.move(30)
     deinit_servos()
     for i in range(3):
         led_off()
-        servo_right_wing.move(45)
+        servo_right_wing.move(-45)
         servo_left_wing.move(-45)
         servo_rotator.move(45)
         utime.sleep_ms(500)
         output_color(rgb_colors[status["requesting_color"]])
-        servo_right_wing.move(-45)
+        servo_right_wing.move(45)
         servo_left_wing.move(45)
         servo_rotator.move(-45)
         
@@ -176,8 +177,8 @@ def timed_out():
     If the Robo Pet times out, the led does a long white flash
     hatch opens and closes (spits food out)
     """
-    _thread.start_new_thread(sound.play_melody, ("timed out"))
-    servo_hatch.move(-30)
+    _thread.start_new_thread(sound.play_melody, ("timed out", 1))
+    servo_hatch.move(30)
     deinit_servos()
     output_color(rgb_colors["white"])
     utime.sleep(2)
@@ -187,6 +188,42 @@ def timed_out():
     deinit_servos()
     status["requesting_color"] = "none"
     status["timed out"] += 1
+
+def ending():
+    if len(status["available"]) > 0:
+        _thread.start_new_thread(sound.play_melody, ("victory", 1))
+        for i in range(0, 255, 5):
+            output_color((i, 0, 0))
+            utime.sleep_ms(3)
+        for i in range(0, 255, 5):
+            output_color((255, i, 0))
+            utime.sleep_ms(3)A
+        for i in range(0, 255, 5):
+            output_color((255-i, 255, 0))
+            utime.sleep_ms(3)
+        for i in range(0, 255, 5):
+            output_color((0, 255, i))
+            utime.sleep_ms(3)
+        for i in range(0, 255, 5):
+            output_color((0, 255-i, 255))
+            utime.sleep_ms(3)
+        for i in range(0, 255, 5):
+            output_color((i, 0, 255))
+            utime.sleep_ms(3)
+        for i in range(0, 255, 5):
+            output_color((255, 0, 255-i))
+            utime.sleep_ms(3)
+            led_off()
+    elif status["failed"] < 3:
+        _thread.start_new_thread(sound.play_melody, ("defeat", 1))
+        output_color(rgb_color["red"])
+        utime.sleep(2)
+        led_off()
+    elif status["timed out"] < 2:
+        _thread.start_new_thread(sound.play_melody, ("power down", 1))
+        output_color(rgb_color["white"])
+        utime.sleep(2)
+        led_off()
 
 def timer(min, max):
     """
@@ -198,14 +235,14 @@ def timer(min, max):
     print(f"timer: {delay}")
     utime.sleep(delay)
 
-def check_state(status):
+def check_state():
     """
     Checks the game state. Returns false if:
     - all rfid tags have been read
     - 3 wrong rfid tags have been read
     - timed out 2 times in a row
     """
-    return len(status["available"]) > 0 and status["failed"] < 3 and status["timed out"] < 2:
+    return len(status["available"]) > 0 and status["failed"] < 3 and status["timed out"] < 2
 
 def main():
     """
@@ -213,7 +250,7 @@ def main():
     and demand food. 
     """
     deinit_servos()
-    while check_state(status):
+    while check_state():
         timer(2, 5)
         request_food()
         while True:
@@ -226,5 +263,6 @@ def main():
             else:
                 timed_out()
                 break
+    ending()
 
 main()
