@@ -41,17 +41,26 @@ melody_AF_2 = [d, 500, f, 400, d, 150, d, 150, g, 300, d, 250, c, 350,
 
 noot_noot = [d, 400, pause, 100, d, 400]
 
+happy = [f_s, 100, a, 100, b, 100]
+
 perkele = [f_s, 100, f, 100, f_s, 100, f, 100, f_s, 100, f, 100, f_s, 100, f, 100]
 
 time_out = [b, 75, pause, 50, b, 75, pause, 500, b, 75, pause, 50, b, 75]
 
 victory = [c, 133, c, 133, c, 133, c, 400, 415, 400, 466, 400, c, 133, 466, 133, c, 1200]
 
+defeat = [f, 166, e, 166, d_s, 166, d, 166, c_s, 166, c, 166]
+
+power_down = [g_s, 250, e, 250, c, 250]
+
 melodies = {
-          "happy" : victory,
+          "happy" : happy,
           "angry" : perkele,
           "timed out" : time_out,
-          "requesting" : noot_noot
+          "requesting" : noot_noot,
+          "victory" : victory,
+          "defeat" : defeat,
+          "power down" : power_down
 }
 
 def play_melody(melody_string, extra): # @param extra to enable multithreading
