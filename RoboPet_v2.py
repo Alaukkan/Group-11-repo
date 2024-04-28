@@ -18,21 +18,7 @@ red_pin.freq(1000)
 green_pin.freq(1000)
 blue_pin.freq(1000)
 
-                # pin numbers for RFID reader
-reader = MFRC522(spi_id=0,sck=2,miso=4,mosi=3,cs=1,rst=0)
-
-tag_to_color = {
-    "0X8020B7B21B4404" : "red",
-    "0X8020B7B21B6304" : "green",
-    "0X8020B7B21B5504" : "blue",
-    "0X8020B7B21B4304" : "yellow",
-    "0X8020B7B21A8704" : "purple"
-}
-
-# order for lists: red(0), green(1), blue(2), yellow(3), purple(4)
-color = ["red", "green", "blue", "yellow", "purple"]
 rgb = [red_pin, green_pin, blue_pin]
-
 rgb_colors = {
     "red" : (255, 0, 0),
     "green" : (0, 255, 0),
@@ -40,6 +26,15 @@ rgb_colors = {
     "yellow" : (255, 235, 40),
     "purple" : (200, 0, 255),
     "white" : (255, 255, 255)
+}
+                # pin numbers for RFID reader
+reader = MFRC522(spi_id=0,sck=2,miso=4,mosi=3,cs=1,rst=0)
+tag_to_color = {
+    "0X8020B7B21B4404" : "red",
+    "0X8020B7B21B6304" : "green",
+    "0X8020B7B21B5504" : "blue",
+    "0X8020B7B21B4304" : "yellow",
+    "0X8020B7B21A8704" : "purple"
 }
 
 status = {
