@@ -197,7 +197,7 @@ def ending():
             utime.sleep_ms(3)
         for i in range(0, 255, 5):
             output_color((255, i, 0))
-            utime.sleep_ms(3)A
+            utime.sleep_ms(3)
         for i in range(0, 255, 5):
             output_color((255-i, 255, 0))
             utime.sleep_ms(3)
