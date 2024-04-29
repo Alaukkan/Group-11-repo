@@ -23,7 +23,7 @@ rgb_colors = {
     "red" : (255, 0, 0),
     "green" : (0, 255, 0),
     "blue" : (0, 0, 255),
-    "yellow" : (255, 235, 40),
+    "yellow" : (255, 255, 0),
     "purple" : (200, 0, 255),
     "white" : (255, 255, 255)
 }
@@ -194,36 +194,35 @@ def ending():
         _thread.start_new_thread(sound.play_melody, ("victory", 1))
         for i in range(0, 255, 5):
             output_color((i, 0, 0))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((255, i, 0))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((255-i, 255, 0))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((0, 255, i))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((0, 255-i, 255))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((i, 0, 255))
-            utime.sleep_ms(3)
+            utime.sleep_ms(9)
         for i in range(0, 255, 5):
             output_color((255, 0, 255-i))
-            utime.sleep_ms(3)
-            led_off()
+            utime.sleep_ms(9)
     elif status["failed"] > 2:
         _thread.start_new_thread(sound.play_melody, ("defeat", 1))
         output_color(rgb_color["red"])
-        utime.sleep(2)
-        led_off()
+        utime.sleep(1)
     elif status["timed out"] > 1:
         _thread.start_new_thread(sound.play_melody, ("power down", 1))
-        output_color(rgb_color["white"])
-        utime.sleep(2)
-        led_off()
+        for i in range(0, 255, 5):
+            output_color((255, 255-i, 255-i))
+            utime.sleep_ms(20)
+    led_off()
 
 def timer(min, max):
     """
