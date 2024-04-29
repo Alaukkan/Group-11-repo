@@ -215,7 +215,7 @@ def ending():
             utime.sleep_ms(9)
     elif status["failed"] > 2:
         _thread.start_new_thread(sound.play_melody, ("defeat", 1))
-        output_color(rgb_color["red"])
+        output_color(rgb_colors["red"])
         utime.sleep(1)
     elif status["timed out"] > 1:
         _thread.start_new_thread(sound.play_melody, ("power down", 1))
