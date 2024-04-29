@@ -23,7 +23,7 @@ rgb_colors = {
     "red" : (255, 0, 0),
     "green" : (0, 255, 0),
     "blue" : (0, 0, 255),
-    "yellow" : (255, 255, 0),
+    "yellow" : (255, 170, 0),
     "purple" : (200, 0, 255),
     "white" : (255, 255, 255)
 }
@@ -252,7 +252,7 @@ def main():
     while check_state():
         timer(2, 5)
         request_food()
-        while True:
+        while check_state():
             result = read_tag()
             if result == "wrong":
                 wrong_food()
