@@ -190,7 +190,7 @@ def timed_out():
     status["timed out"] += 1
 
 def ending():
-    if len(status["available"]) > 0:
+    if len(status["available"]) == 0:
         _thread.start_new_thread(sound.play_melody, ("victory", 1))
         for i in range(0, 255, 5):
             output_color((i, 0, 0))
@@ -214,12 +214,12 @@ def ending():
             output_color((255, 0, 255-i))
             utime.sleep_ms(3)
             led_off()
-    elif status["failed"] < 3:
+    elif status["failed"] > 2:
         _thread.start_new_thread(sound.play_melody, ("defeat", 1))
         output_color(rgb_color["red"])
         utime.sleep(2)
         led_off()
-    elif status["timed out"] < 2:
+    elif status["timed out"] > 1:
         _thread.start_new_thread(sound.play_melody, ("power down", 1))
         output_color(rgb_color["white"])
         utime.sleep(2)
