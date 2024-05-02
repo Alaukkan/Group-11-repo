@@ -51,7 +51,7 @@ victory = [c, 133, c, 133, c, 133, c, 400, 415, 400, 466, 400, c, 133, 466, 133,
 
 defeat = [f, 166, e, 166, d_s, 166, d, 166, c_s, 166, c, 166]
 
-power_down = [g_s, 250, e, 250, c, 250]
+power_down = [g_s, 250, c, 250]
 
 melodies = {
           "happy" : happy,
