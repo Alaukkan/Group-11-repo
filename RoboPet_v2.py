@@ -171,6 +171,7 @@ def wrong_food():
     servo_rotator.move(0)
     deinit_servos()
     status["failed"] += 1
+    status["timed out"] = 0
 
 def timed_out():
     """
