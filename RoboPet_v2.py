@@ -155,16 +155,22 @@ def wrong_food():
     deinit_servos()
     for i in range(3):
         led_off()
-        servo_right_wing.move(-45)
-        servo_left_wing.move(-45)
-        servo_rotator.move(45)
-        utime.sleep_ms(500)
+        for i in range(30):
+            servo_right_wing.move(-1.5 * i)
+            servo_left_wing.move(-1.5 * i)
+            servo_rotator.move(i)
+            utime.sleep_ms(10)
         output_color(rgb_colors[status["requesting_color"]])
-        servo_right_wing.move(45)
-        servo_left_wing.move(45)
-        servo_rotator.move(-45)
-        
-        utime.sleep_ms(500)
+        for i in range(60):
+            servo_right_wing.move(-1.5 * (30 - i))
+            servo_left_wing.move(-1.5 * (30 - i))
+            servo_rotator.move(30 - i)
+            utime.sleep_ms(10)
+        for i in range(30):
+            servo_right_wing.move(1.5 * (30 - i))
+            servo_left_wing.move(1.5 * (30 - i))
+            servo_rotator.move(i - 30)
+            utime.sleep_ms(10)
     servo_right_wing.move(0)
     servo_left_wing.move(0)
     servo_hatch.move(0)
