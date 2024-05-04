@@ -124,7 +124,7 @@ def correct_food():
     hatch opens and closes
     """
     _thread.start_new_thread(sound.play_melody, ("happy", 1))
-    servo_hatch.move(-30)
+    servo_hatch.move(-60)
     servo_right_wing.move(-70)
     servo_left_wing.move(70)
     deinit_servos()
