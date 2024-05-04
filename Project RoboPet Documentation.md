@@ -13,17 +13,18 @@ A system for ingesting desired foodstuffs and discarding undesired ones will be 
 
 * Raspberry Pi Pico W
 * MFRC-522 RF-ID-Reader
-* RF-ID-Tags (13.56 MHz)
+* 5 RF-ID-Tags (13.56 MHz)
 * 4 Servomotors (180 degree motion)
-* 1 or 2 RGB LEDs
+* 1 RGB LED
 * Power Source (4.5V battery pack holding 3 AA batteries)
 * 2 Breadboards
 * Jumper Cables
 * Resistors, capacitors
+* 3D-Printed parts
 
 ## Tools and Software
 
-* 3D-Printer
+* 3D-Printer (We used different versions of Ender-3)
 * CAD Software (Fusion 360, FreeCAD, Blender with CAD Sketcher, etc.)
 * Slicer Software (Cura, Slic3r, Simplify 3D, etc.)
 * IDE (VS Code, Arduino IDE, Thonny, etc.)
@@ -60,14 +61,14 @@ def read_tag():
     return "Timed out"
 
 
-def output_color(icolor):
+def output_color(color):
     """
     takes the rgb values from given parameter tuple and
     outputs the color to the RGB led
     """
-    red = icolor[0]
-    green = icolor[1]
-    blue = icolor[2]
+    red = color[0]
+    green = color[1]
+    blue = color[2]
     rgb[0].duty_u16(round(65535 * red / 255))
     rgb[1].duty_u16(round(65535 * green / 255))
     rgb[2].duty_u16(round(65535 * blue / 255))
@@ -79,11 +80,78 @@ def request_food():
     wants by accessing the element in the led list. Robopet
     indicates what food it wants by a colored LED. 
     """
-    item = random.randint(0, len(color) - 1)
-    status["requesting_color"] = color[item]
-    print(f"requesting food: {color[item]}")
-    output_color(rgb_colors[color[item]])
-    _thread.start_new_thread(sound.play_melody, ("requesting"))
+    random.seed(utime.time() - utime.time_ns())
+    length = len(status["available"])
+    if length > 1:
+        item = random.randint(0, length - 1)
+    else:
+        item = 0
+    status["requesting_color"] = status["available"][item]
+    print(f"requesting food: {status["available"][item]}")
+    output_color(rgb_colors[status["available"][item]])
+    _thread.start_new_thread(sound.play_melody, ("requesting", 1))
+
+
+def correct_food():
+    """
+    If the food is correct, led flashes white for 2 seconds
+    both wings lift up
+    hatch opens and closes
+    """
+    _thread.start_new_thread(sound.play_melody, ("happy", 1))
+    servo_hatch.move(-60)
+    servo_right_wing.move(-70)
+    servo_left_wing.move(70)
+    deinit_servos()
+    for i in range(3):
+        led_off()
+        utime.sleep_ms(300)
+        output_color(rgb_colors["white"])
+        utime.sleep_ms(300)
+    led_off()
+    servo_hatch.move(0)
+    servo_right_wing.move(0)
+    servo_left_wing.move(0)
+    deinit_servos()
+    status["available"].remove(status["requesting_color"])
+    status["requesting_color"] = "none"
+    status["timed out"] = 0
+
+
+def ending():
+    if len(status["available"]) == 0:
+        _thread.start_new_thread(sound.play_melody, ("victory", 1))
+        for i in range(0, 255, 5):
+            output_color((i, 0, 0))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((255, i, 0))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((255-i, 255, 0))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((0, 255, i))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((0, 255-i, 255))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((i, 0, 255))
+            utime.sleep_ms(9)
+        for i in range(0, 255, 5):
+            output_color((255, 0, 255-i))
+            utime.sleep_ms(9)
+    elif status["failed"] > 2:
+        _thread.start_new_thread(sound.play_melody, ("defeat", 1))
+        output_color(rgb_colors["red"])
+        utime.sleep(1)
+    elif status["timed out"] > 1:
+        _thread.start_new_thread(sound.play_melody, ("power down", 1))
+        for i in range(0, 255, 5):
+            output_color((255, 255-i, 255-i))
+            utime.sleep_ms(20)
+    led_off()
 
 ```
 
