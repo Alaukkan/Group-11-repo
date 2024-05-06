@@ -5,9 +5,11 @@
 ## List of files
 
 * Axle_new.stl
-* Kehikko_pohjalle.stl
-* RFID_Tag_2x21mm.stl
-* Tongue_new.stl
-* kehikko_paristoille v3.stl
-* torso.stl
-* wing.stl
+* Battery_holder.stl
+* Bottom_frame.stl
+* Hat.stl
+* Head.stl
+* RFID_tag_42mm.stl
+* Tongue.stl
+* Torso.stl
+* Wing.stl
